@@ -19,7 +19,7 @@ app.set('view engine','ejs');
 const connection = require('./database/db');
 
 //9 - establecemos las rutas
-app.get('/login',(req, res)=>{
+app.get('/',(req, res)=>{
     res.render('login');
 })
 
