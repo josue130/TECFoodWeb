@@ -1,16 +1,29 @@
 var idUser = 0;
 id = 0;
-cedula = "";
-carne = "";
-nombreU = "";
-primerapellido = "";
-segundoapellido = '';
-edad = "";
-fecha = '';
+cedulaA = "";
+carneA = "";
+nombreA = "";
+primerapellidoA = "";
+segundoapellidoA = '';
+edadA = "";
+fechaA = '';
+correoA = "";
+
 correoU = "";
+nombreU = "";
+
+cedulaC = "";
+carneC = "";
+nombreC = "";
+primerapellidoC = "";
+segundoapellidoC = '';
+edadC = "";
+fechaC = '';
+correoC = "";
 
 const express = require('express');
 const app = express();
+const nodemailer = require('nodemailer')
 
 //2 - Para poder capturar los datos del formulario (sin urlencoded nos devuelve "undefined")
 app.use(express.urlencoded({extended:false}));
@@ -49,7 +62,15 @@ app.get('/login',(req, res)=>{
 })
 
 app.get('/register',(req, res)=>{
-    res.render('register');
+	cedulaA = cedulaC;
+	carneA = carneC;
+	nombreA = nombreC;
+	primerapellidoA = primerapellidoC;
+	segundoapellidoA = segundoapellidoC;
+	edadA = edadC;
+	fechaA = fechaC;
+	correoA = correoC;
+	res.render('register',{cedulaA,carneA,nombreA,primerapellidoA,segundoapellidoA,edadA,fechaA,correoA});
 })
 
 app.get('/index',(req, res)=>{
@@ -188,7 +209,25 @@ app.post('/register', async (req, res)=>{
          edad:edad, fechanacimiento:fechanacimiento, correo:correo, contraseña:pass}, async (error, results)=>{
         if(error){
             console.log(error);
-        }else{            
+        }else{
+			const a = correoC;
+			console.log (correoU, a)
+			var mailRegistro = {
+				from: 'tecfoodweb@gmail.com',
+				to: correo,
+				subject: 'Registro de Bienvenida',
+				text: 'Gracias por registrarse en nuestra plataforma \nCedula: ' +cedula+ '\nCarne: ' +carne+ '\nNombre: ' +nombre+ '\nPrimer Apellido: ' +primerapellido+
+				'\nSegundo Apellido: ' +segundoapellido+ '\nEdad: ' +edad+
+				'\nFecha Nacimiento: ' +fechanacimiento+ '\nCorreo: ' +correo+ '\n\nAtt: TecFood Web'	
+			}
+			//se envia el comprobante de la transferencia
+			transporter.sendMail(mailRegistro, function(error, info){
+				if (error) {
+					console.log(error);
+				} else {
+						console.log('Correo enviado: ' + info.response);
+					}
+			});            
 			res.render('register', {
 				alert: true,
 				alertTitle: "Registro",
@@ -246,6 +285,14 @@ app.post('/auth', async (req, res)=> {
 					req.session.nombre = results[0].nombre;
 					nombreU = results[0].nombre;
 					correoU = results[0].correo.toString();
+					nombreC = results[0].nombre;
+					correoC = results[0].correo.toString();
+					cedulaC = results[0].cedula;
+					carneC = results[0].carne;
+					primerapellidoC = results[0].primerapellido;
+					segundoapellidoC = results[0].segundoapellido;
+					edadC = results[0].edad;
+					fechaC = results[0].fechanacimiento;
 					res.render('login', {
 						alert: true,
 						alertTitle: 'Inicio Sesión',
@@ -306,6 +353,14 @@ app.get('/logout', function (req, res) {
 	})
 });
 
+var transporter = nodemailer.createTransport({
+	host: 'smtp.gmail.com',
+	port: 587,
+	auth: {
+	  user: 'tecfoodweb@gmail.com',
+	  pass: 'hnqagnceljerjump'
+	}
+  });
 
 app.listen(3000, (req, res)=>{
     console.log('SERVER RUNNING IN http://localhost:3000');
