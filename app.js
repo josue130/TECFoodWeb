@@ -1,4 +1,5 @@
 var idUser = 0;
+id = 0;
 cedula = "";
 carne = "";
 nombreU = "";
@@ -55,6 +56,117 @@ app.get('/index',(req, res)=>{
     res.render('index');
 })
 
+app.get('/gestionclientes',(req, res)=>{
+	id = idUser;
+	res.render('gestionclientes',{id});
+	res.end();
+})
+
+//metodo para modificar datos del cliente
+app.post('/modificarCliente', async (req, res)=>{
+	const idu = req.body.id;
+	const cedulaN = req.body.cedula;
+    const carneN = req.body.carne;
+    const nombreN = req.body.nombre;
+    const primerapellidoN = req.body.primerapellido;
+    const segundoapellidoN = req.body.segundoapellido;
+    const edadN = req.body.edad;
+    const fechanacimientoN = req.body.fechanacimiento;
+	const correoN = req.body.correo;
+	const contraseñaN = req.body.contraseña;
+	if (idu){
+		//se valida si los datos ingresados estan en la base de datos
+		connection.query('SELECT * FROM clientes WHERE id = ?', [idu], async (error, results)=> {
+			if (results.length == 0 || results[0].id != idu){
+				res.render('gestionclientes', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "ID No Existente o Incorrecto",
+                    alertIcon:'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'gestionclientes'    
+                });
+			}else{
+    			connection.query('UPDATE clientes SET cedula = ?, carne = ?, nombre = ?, primerapellido = ?, segundoapellido = ?, edad = ?, fechanacimiento = ?, correo = ?, contraseña = ? WHERE id = ?', [cedulaN, carneN, nombreN, primerapellidoN, segundoapellidoN, edadN, fechanacimientoN, correoN, contraseñaN, idu], async(error, results)=>{
+        		if(error){
+            		console.log(error);
+        		}else{
+					res.render('gestionclientes', {
+						alert: true,
+						alertTitle: 'Modificación de Cliente',
+						alertMessage: 'Cambio Éxitoso!',
+						alertIcon: 'success',
+						showConfirmButton: false,
+						timer: 1500,
+						ruta: ''
+					});
+				}
+    		});
+		}
+		});
+
+	}else {	
+		res.render('gestionclientes', {
+			alert: true,
+        	alertTitle: 'Advertencia',
+        	alertMessage: 'Por favor ingrese datos, no puede estar vacío',
+        	alertIcon: 'warning',
+        	showConfirmButton: true,
+        	timer: false,
+        	ruta: 'gestionclientes'
+		});
+	}
+	
+});
+
+//metodo para eliminar clientes
+app.post('/eliminarCliente', async (req, res)=>{
+	const idcliente = req.body.id;
+	if (idcliente){
+		//se valida si los datos ingresados estan en la base de datos
+		connection.query('SELECT * FROM clientes WHERE id = ?', [idcliente], async (error, results)=> {
+			if (results.length == 0 || results[0].id != idcliente){
+				res.render('gestionclientes', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "ID No Existente o Incorrecto",
+                    alertIcon:'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'gestionclientes'    
+                });
+			}else{
+				connection.query("DELETE FROM clientes WHERE id = ?",[idcliente]);
+				if(error){
+					console.log(error);
+				}else{            
+					res.render('gestionclientes', {
+						alert: true,
+						alertTitle: "Eliminación Cliente",
+						alertMessage: "¡Cliente Eliminado con Éxito!",
+						alertIcon:'success',
+						showConfirmButton: false,
+						timer: 1500,
+						ruta: 'gestionclientes'
+					});
+						
+				}
+			}
+		});
+	}else {	
+		res.render('gestionclientes', {
+			alert: true,
+        	alertTitle: 'Advertencia',
+        	alertMessage: 'Por favor ingrese un ID',
+        	alertIcon: 'warning',
+        	showConfirmButton: true,
+        	timer: false,
+        	ruta: 'gestionclientes'
+		});
+	}
+});
+
 //10 - Método para la REGISTRACIÓN
 app.post('/register', async (req, res)=>{
     const cedula = req.body.cedula;
@@ -68,7 +180,7 @@ app.post('/register', async (req, res)=>{
 	const pass = req.body.pass;
 	let passwordHash = await bcrypt.hash(pass, 8);
     connection.query('INSERT INTO clientes SET ?',{cedula:cedula, carne:carne, nombre:nombre, primerapellido:primerapellido, segundoapellido:segundoapellido,
-         edad:edad, fechanacimiento:fechanacimiento, correo:correo, contraseña:passwordHash}, async (error, results)=>{
+         edad:edad, fechanacimiento:fechanacimiento, correo:correo, contraseña:pass}, async (error, results)=>{
         if(error){
             console.log(error);
         }else{            
@@ -88,6 +200,8 @@ app.post('/register', async (req, res)=>{
 
 
 
+
+
 //11 - Metodo para la autenticacion
 app.post('/auth', async (req, res)=> {
 	const correo = req.body.correo;
@@ -95,7 +209,7 @@ app.post('/auth', async (req, res)=> {
 	let passwordHash = await bcrypt.hash(pass, 8);    
 	if (correo && pass) {
 		connection.query('SELECT * FROM clientes WHERE correo = ?', [correo], async (error, results, fields)=> {
-			if( results.length == 0 || !( await bcrypt.compare(pass, results[0].contraseña))) {    
+			if( results.length == 0 || results[0].contraseña != pass) {    
 				res.render('login', {
                     alert: true,
                     alertTitle: "Error",
@@ -125,6 +239,7 @@ app.post('/auth', async (req, res)=> {
 				});        			
 			}			
 		});
+		
 	} else {	
 		res.render('login', {
 			alert: true,
