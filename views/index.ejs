@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="resources/css/style.css">
+    <title>TecFood Web</title>
+    <style>      
+    
+    </style>
+  </head>
+  <body class="grid-container">
+        <% if (login) { %>
+    <header class="header"><h1><img src="ico.png" width="35" height="35"/> TECFOOD WEB</h1></header>    
+    <nav class="navbar">
+      <a href="gestionalimentos" class="estilogestion">Gestión Alimentos</a>
+      <a href="gestionclientes" class="estilogestion">Gestión Clientes</a>
+      <a href="gestiontiemposcomida" class="estilogestion">Tiempos Comida</a>
+      <a href="gestionpedidos" class="estilogestion">Gestión Pedidos</a>
+      <br>
+    </nav>
+  
+    <aside class="sidebar">
+            <h2>Datos usuario</h2>
+            <br>
+            <strong> Nombre:<br> <%= nombre %> <br>
+                <br> Correo:<br> <%= correo %> <br>
+                <br>                      
+                <a href="logout" class="a-logout">Logout</a>
+                <br> <a  href="cambiarcontra" class="editar-contra">Cambiar contraseña</a>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                
+    </aside>    
+    <article class="main">
+      <br><br><br>
+      <h1>BIENVENIDO AL SISTEMA <br>
+        DE COMPRAS Y ALIMENTOS<br>
+        TECFOOD WEB</h1>
+        <br><br><br><br>
+      <p>Con esta plataforma podrá hacer uso <br>
+         de los servicios que brinda <br>
+         esta compañia desde la facilidad web
+      </p>
+      </article>
+        
+        <% } else { %>
+            <h1 > BIENVENIDO
+              <h2><img src="ico.png" width="30" height="30"/> TECFOOD WEB</h2>
+              <br><br>
+              <a href="login" class="btn-login">INGRESAR</a>
+            </h1>
+        <% } %> 
+  </body>
+</html>

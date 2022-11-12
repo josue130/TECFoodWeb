@@ -1,13 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de sesion</title>
-    <link rel="stylesheet" href="resources/css/style.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+	<link rel="stylesheet" href="resources/css/style.css">
 </head>
-<body>
-    <h1>Debe iniciar sesion</h1>
+<body class="fondo_login">
+	<div class="login-form">
+        <h1><img src="ico.png" width="40" height="40"/> TECFOOD WEB</h1>
+        <h2>Inicio Sesión</h2>
+        <form action="auth" method="POST">
+            <input type="text" name="correo" id="correo" placeholder="Correo" >
+            <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" >
+            <input type="submit" class="btn-login" value="Iniciar Sesión">
+        </form>
+		<br>
+		<h3>¿No tienes una cuenta de cliente?</h1>
+        <a href="register" class="btn-register">Registrarse</a>
+		
+		
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+   <% if (typeof alert != "undefined")  { %>
+    <script>
+    Swal.fire({
+      title:'<%= alertTitle %>',
+      text:'<%= alertMessage %>',
+      icon:'<%= alertIcon %>',
+      showConfirmButton: <%= showConfirmButton %>,
+      timer: <%= timer %>
+    }).then(()=>{
+      window.location='/<%= ruta %>'
+    })
+    </script>
+  <% } %>
+	</div>
 </body>
 </html>

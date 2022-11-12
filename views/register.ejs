@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/style.css">
+    <title>Register</title>
+</head>
+<body class="fondo">
+    <div class="register-form">
+      <h3><img src="ico.png" width="40" height="40"/> TECFOOD WEB</h3> 
+        
+      <h1>Registrarse</h1>
+		<form action="/register" method="POST">
+      <label for="cedula">Cedula</label>
+      <input type="text" name="cedula" required>
+
+      <label for="carne">Carne</label>
+      <input type="text" name="carne" required>
+
+      <label for="nombre">Nombre</label>
+      <input type="text" name="nombre" required>
+
+      <label for="primerapellido">Primer apellido</label>
+      <input type="text" name="primerapellido" required>
+
+      <label for="segundoapellido">Segundo apellido</label>
+      <input type="text" name="segundoapellido" required>
+
+      <label for="edad">Edad</label>
+      <input type="text" name="edad" required>
+
+      <label for="fechanacimiento">Fecha nacimiento</label>
+      <input type="text" name="fechanacimiento" required>
+
+      <label for="correo">Correo</label>
+      <input type="text" name="correo" required>
+
+      <label for="contraseña">Contraseña</label>
+      <input type="password" name="pass" required>
+
+
+            <div style="display: inline;">             
+              <a href="/" class="btn-cancel">Cancelar</a>
+              <input type="submit" class="btn-save" value="Registrar">
+            </div>
+		</form>		
+	</div>
+
+    		
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<% if (typeof alert != "undefined")  { %>
+ <script>
+ Swal.fire({
+   title:'<%= alertTitle %>',
+   text:'<%= alertMessage %>',
+   icon:'<%= alertIcon %>',
+   showConfirmButton: <%= showConfirmButton %>,
+   timer: <%= timer %>
+ }).then(()=>{
+   window.location='/<%= ruta %>'
+ })
+ </script>
+<% } %>
+ </div>
+</body>
+</html>
