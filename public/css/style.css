@@ -4,7 +4,37 @@ body{
     margin: auto;
     text-align: center;
   }
+  h3.tiempoComida{
+    font-size: 20px;
+    padding: 0 20px;
+    line-height: 10px;
+    float: left; 
+    margin-left: 150px;
+   
+  }
+
+  h3.tipoComida{
+    font-size: 20px;
+    padding: 0 20px;
+    line-height: 10px;
+  }
+
+  select.tiempoComida{
+    font-size: 20px;
+    padding: 0 120px;
+    line-height: 80px;
+
+    margin-left: 120;
   
+}
+select.tipoComida{
+    font-size: 20px;
+    padding: 0 100px;
+    line-height: 80px;
+    margin: 20px 100px;
+    position: sticky; 
+    top: 20px;  
+}
   /* Login form */
   .login-form, .contenedor {
     background-color: white;

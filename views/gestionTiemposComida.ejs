@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="resources/css/style.css">
+    <title>Gestion Tiempos de Comida</title>
+    <style>      
+    
+    </style>
+  </head>
+  <body class="grid-container">
+    <header class="header"><h1><img src="ico.png" width="35" height="35"/> TECFOOD WEB</h1></header>    
+    <nav class="navbar">
+      <a href="gestionalimentos" class="estilogestion">Gestión Alimentos</a>
+      <a href="gestionclientes" class="estilogestion">Gestión Clientes</a>
+      <a href="gestiontiemposcomida" class="estilogestion">Tiempos Comida</a>
+      <a href="gestionpedidos" class="estilogestion">Gestión Pedidos</a>
+      <br>
+    </nav>
+
+    <aside class="sidebar">
+        <h2>Datos usuario</h2>
+        <br>
+        <strong> Nombre:<br> <%= nombre %> <br>
+            <br> Correo:<br> <%= correo %> <br>
+            <br>                      
+            <a href="logout" class="a-logout">Logout</a>
+            <br> <a  href="cambiarcontra" class="editar-contra">Cambiar contraseña</a>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+    </aside> 
+    <h1>Gestion de tiempos de comida</h1>
+    <h3 class="tiempoComida">Tiempo de Comida</h1>
+    <h3 class="tipoComida">Tipo de comida</h3>
+    <select class="tiempoComida" aria-label=".form-select-lg example">
+        
+        <option selected>Seleccione</option>
+        <option value="1">Desayuno</option>
+        <option value="2">Almuerzo</option>
+        <option value="3">Cena</option>
+    </select>
+    
+    <select class="tipoComida" aria-label=".form-select-lg example">
+        <option selected>Seleccione</option>
+        <option value="1">Plato Principal</option>
+        <option value="2">Bebida</option>
+        <option value="3">Postre</option>
+    </select>   
+    
+  </body>
+</html>

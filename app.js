@@ -88,6 +88,13 @@ app.get('/gestionclientes',(req, res)=>{
 	res.end();
 })
 
+app.get('/gestionTiemposComida', (req, res)=>{
+	res.render('gestionTiemposComida',{
+		nombre: nombreU,
+		correo: correoU
+	});
+})
+
 //metodo para modificar datos del cliente
 app.post('/modificarCliente', async (req, res)=>{
 	const idu = req.body.id;
@@ -250,6 +257,8 @@ app.post('/register', async (req, res)=>{
 app.post('/auth', async (req, res)=> {
 	const correo = req.body.correo;
 	const pass = req.body.contraseña;
+	correoU = correo;
+	nombreU = req.body.nombre;
 	let passwordHash = await bcrypt.hash(pass, 8);    
 	if (correo && pass) {
 		if (correo == "admin@itcr.cr" && pass == "admin123"){
