@@ -56,6 +56,11 @@ app.get('/index',(req, res)=>{
     res.render('index');
 })
 
+app.get('/index2',(req, res)=>{
+    res.render('index2');
+})
+
+
 app.get('/gestionclientes',(req, res)=>{
 	id = idUser;
 	res.render('gestionclientes',{id});
@@ -208,37 +213,53 @@ app.post('/auth', async (req, res)=> {
 	const pass = req.body.contraseña;
 	let passwordHash = await bcrypt.hash(pass, 8);    
 	if (correo && pass) {
-		connection.query('SELECT * FROM clientes WHERE correo = ?', [correo], async (error, results, fields)=> {
-			if( results.length == 0 || results[0].contraseña != pass) {    
-				res.render('login', {
-                    alert: true,
-                    alertTitle: "Error",
-                    alertMessage: "USUARIO y/o PASSWORD incorrectas",
-                    alertIcon:'error',
-                    showConfirmButton: true,
-                    timer: false,
-                    ruta: 'login'    
-                });				
-			} else {         
-				//creamos una var de session y le asignamos true si INICIO SESSION       
-				req.session.loggedin = true;
-				req.session.id = results[0].id;
-				idUser= results[0].id;                
-				req.session.nombre = results[0].nombre;
-				nombreU = results[0].nombre;
-				correoU = results[0].correo.toString();
-				res.render('login', {
-					alert: true,
-                    alertTitle: 'Inicio Sesión',
-                    alertMessage: '¡Inicio de Sesión Éxitoso!',
-                    alertIcon: 'success',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    ruta: ''
-				
-				});        			
-			}			
-		});
+		if (correo == "admin@itcr.cr" && pass == "admin123"){
+			
+			res.render('login', {
+				alert: true,
+				alertTitle: 'Inicio Sesión',
+				alertMessage: '¡Inicio de Sesión Éxitoso!',
+				alertIcon: 'success',
+				showConfirmButton: false,
+				timer: 1500,
+				ruta: 'index'
+			
+			});
+
+		}else{
+			connection.query('SELECT * FROM clientes WHERE correo = ?', [correo], async (error, results, fields)=> {
+				if( results.length == 0 || results[0].contraseña != pass) {    
+					res.render('login', {
+						alert: true,
+						alertTitle: "Error",
+						alertMessage: "USUARIO y/o PASSWORD incorrectas",
+						alertIcon:'error',
+						showConfirmButton: true,
+						timer: false,
+						ruta: 'login'    
+					});				
+				} else {         
+					//creamos una var de session y le asignamos true si INICIO SESSION    
+					req.session.loggedin = true;   
+					req.session.id = results[0].id;
+					idUser= results[0].id;                
+					req.session.nombre = results[0].nombre;
+					nombreU = results[0].nombre;
+					correoU = results[0].correo.toString();
+					res.render('login', {
+						alert: true,
+						alertTitle: 'Inicio Sesión',
+						alertMessage: '¡Inicio de Sesión Éxitoso!',
+						alertIcon: 'success',
+						showConfirmButton: false,
+						timer: 1500,
+						ruta: ''
+					
+					});        			
+				}			
+			});
+
+		}
 		
 	} else {	
 		res.render('login', {
@@ -256,13 +277,13 @@ app.post('/auth', async (req, res)=> {
 //12 - Método para controlar que está auth en todas las páginas
 app.get('/', (req, res)=> {
 	if (req.session.loggedin) {
-		res.render('index',{
+		res.render('index2',{
 			login: true,
 			nombre: nombreU,
 			correo: correoU	
 		});		
 	} else {
-		res.render('index',{
+		res.render('index2',{
 			login:false,
 			nombre:'Debe iniciar sesión',			
 		});				
