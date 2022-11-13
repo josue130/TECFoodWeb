@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="resources/css/style.css" />
+    <title>Gestión Alimentos</title>
+    <style></style>
+  </head>
+
+  <body class="grid-container">
+    <header class="header">
+      <h1><img src="ico.png" width="35" height="35" /> TECFOOD WEB</h1>
+    </header>
+    <nav class="navbar">
+      <a href="gestionalimentos" class="estilogestion">Gestión Alimentos</a>
+      <a href="gestionclientes" class="estilogestion">Gestión Clientes</a>
+      <a href="gestiontiemposcomida" class="estilogestion">Tiempos Comida</a>
+      <a href="gestionpedidos" class="estilogestion">Gestión Pedidos</a>
+      <br />
+    </nav>
+
+    <aside class="sidebar">
+      <br /><br /><br /><br />
+      <h2>
+        Para ver sus datos debe<br />
+        regresar a la pantalla <br />
+        de inicio
+      </h2>
+      <br />
+      <a href="/index" class="a-logout">Regresar</a>
+    </aside>
+    <article class="main">
+      <h2>Gestión de Alimentos</h2>
+      <br /><br />
+      <form action="agregar_alimento" method="POST">
+        <h3>Agregar Alimento</h3>
+        <br /><br />
+        <input
+          type="text"
+          name="nombre_alimento"
+          id="nombre_alimento"
+          placeholder="Nombre del alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="disponibilidad"
+          id="disponibilidad"
+          placeholder="Disponibilidad"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="tipo"
+          id="tipo"
+          placeholder="Tipo"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="precio"
+          id="precio"
+          placeholder="Precio"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="submit"
+          class="btn-register"
+          id="agregarAlimento"
+          value="Agregar"
+        />
+      </form>
+      <form action="eliminar_alimento" method="POST">
+        <br /><br />
+        <h3>Eliminar Alimento</h3>
+        <br /><br />
+        <input
+          type="text"
+          name="id"
+          id="id"
+          placeholder="ID Alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="submit"
+          class="btn-register"
+          id="eliminar_alimento"
+          value="Eliminar"
+        />
+      </form>
+      <form action="modificar_alimento" method="POST">
+        <br /><br />
+        <h3>Modificar Alimento</h3>
+        <br /><br />
+        <input
+          type="text"
+          name="id_alimento"
+          id="id_alimento"
+          placeholder="ID Alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="nombre_alimento"
+          id="nombre_alimento"
+          placeholder="Nombre Alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="disponibilidad"
+          id="disponibilidad"
+          placeholder="Disponibilidad"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="tipo"
+          id="tipo"
+          placeholder="Tipo Alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="text"
+          name="precio"
+          id="precio"
+          placeholder="Precio Alimento"
+          size="50"
+        />
+        <br /><br />
+        <input
+          type="submit"
+          class="btn-register"
+          id="boton_modificar"
+          value="Modificar"
+        />
+      </form>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <% if (typeof alert !="undefined" ) { %>
+    <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                timer: <%= timer %>
+      }).then(() => {
+                    window.location = '/<%= ruta %>'
+                })
+    </script>
+    <% } %>
+  </body>
+</html>

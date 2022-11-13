@@ -82,6 +82,12 @@ app.get('/index2',(req, res)=>{
 })
 
 
+app.get('/gestionAlimentos',(req, res)=>{
+	id = idUser;
+	res.render('gestionAlimentos',{id});
+	res.end();
+})
+
 app.get('/gestionclientes',(req, res)=>{
 	id = idUser;
 	res.render('gestionclientes',{id});
@@ -94,6 +100,130 @@ app.get('/gestionTiemposComida', (req, res)=>{
 		correo: correoU
 	});
 })
+
+
+app.post('/agregar_alimento', async (req, res)=>{
+    const nombre = req.body.nombre_alimento;
+    const disponibilidad = req.body.disponibilidad;
+    const tipo = req.body.tipo;
+    const precio = req.body.precio;
+    connection.query('INSERT INTO comida SET ?',{Nombre:nombre, Disponibilidad:disponibilidad, Tipo:tipo, Precio:precio}, async (error, results)=>{
+        if(error){
+            console.log(error);
+        }else{          
+			res.render('gestionAlimentos', {
+				alert: true,
+				alertTitle: "Registro",
+				alertMessage: "¡Registro de Alimento Exitoso!",
+				alertIcon:'success',
+				showConfirmButton: false,
+				timer: 1500,
+				ruta: 'gestionAlimentos'
+			});      
+        }
+	});
+});
+
+
+app.post('/modificar_alimento', async (req, res)=>{
+	const id_alimento = req.body.id_alimento;
+    const nombre_alimento = req.body.nombre_alimento;
+    const disponibilidad = req.body.disponibilidad;
+    const tipo = req.body.tipo;
+    const precio = req.body.precio;
+	if (id_alimento){
+		//se valida si los datos ingresados estan en la base de datos
+		connection.query('SELECT * FROM comida WHERE id = ?', [id_alimento], async (error, results)=> {
+			if (results.length == 0 || results[0].id != id_alimento){
+				res.render('gestionAlimentos', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "ID No Existente o Incorrecto",
+                    alertIcon:'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'gestionAlimentos'    
+                });
+			}else{
+    			connection.query('UPDATE comida SET Nombre = ?, Disponibilidad = ?, Tipo = ?, Precio = ? WHERE id = ?', [nombre_alimento, disponibilidad, tipo, precio, id_alimento], async(error, results)=>{
+        		if(error){
+            		console.log(error);
+        		}else{
+					res.render('gestionAlimentos', {
+						alert: true,
+						alertTitle: 'Modificación de Alimento',
+						alertMessage: 'Cambio Éxitoso!',
+						alertIcon: 'success',
+						showConfirmButton: false,
+						timer: 1500,
+						ruta: 'gestionAlimentos'
+					});
+				}
+    		});
+		}
+		});
+
+	}else {	
+		res.render('gestionAlimentos', {
+			alert: true,
+        	alertTitle: 'Advertencia',
+        	alertMessage: 'Por favor ingrese datos, no puede estar vacío',
+        	alertIcon: 'warning',
+        	showConfirmButton: true,
+        	timer: false,
+        	ruta: 'gestionAlimentos'
+		});
+	}
+	
+});
+
+
+app.post('/eliminar_alimento', async (req, res)=>{
+	const id_alimento = req.body.id;
+	if (id_alimento){
+		//se valida si los datos ingresados estan en la base de datos
+		connection.query('SELECT * FROM comida WHERE id = ?', [id_alimento], async (error, results)=> {
+			if (results.length == 0 || results[0].id != id_alimento){
+				res.render('gestionAlimentos', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "ID No Existente o Incorrecto",
+                    alertIcon:'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'gestionAlimentos'    
+                });
+			}else{
+				connection.query("DELETE FROM comida WHERE id = ?",[id_alimento]);
+				if(error){
+					console.log(error);
+				}else{            
+					res.render('gestionAlimentos', {
+						alert: true,
+						alertTitle: "Eliminación Alimento",
+						alertMessage: "Alimento Eliminado con Éxito!",
+						alertIcon:'success',
+						showConfirmButton: false,
+						timer: 1500,
+						ruta: 'gestionAlimentos'
+					});
+						
+				}
+			}
+		});
+	}else {	
+		res.render('gestionAlimentos', {
+			alert: true,
+        	alertTitle: 'Advertencia',
+        	alertMessage: 'Por favor ingrese un ID',
+        	alertIcon: 'warning',
+        	showConfirmButton: true,
+        	timer: false,
+        	ruta: 'gestionAlimentos'
+		});
+	}
+});
+
 
 //metodo para modificar datos del cliente
 app.post('/modificarCliente', async (req, res)=>{
