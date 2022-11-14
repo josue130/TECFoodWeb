@@ -60,6 +60,57 @@ app.use(session({
 app.get('/login',(req, res)=>{
     res.render('login');
 })
+
+app.get('/register',(req, res)=>{
+	cedulaA = cedulaC;
+	carneA = carneC;
+	nombreA = nombreC;
+	primerapellidoA = primerapellidoC;
+	segundoapellidoA = segundoapellidoC;
+	edadA = edadC;
+	fechaA = fechaC;
+	correoA = correoC;
+	res.render('register',{cedulaA,carneA,nombreA,primerapellidoA,segundoapellidoA,edadA,fechaA,correoA});
+})
+
+app.get('/index',(req, res)=>{
+    res.render('index');
+})
+
+app.get('/index2',(req, res)=>{
+    res.render('index2');
+})
+
+
+app.get('/gestionAlimentos',(req, res)=>{
+	id = idUser;
+	res.render('gestionAlimentos',{id});
+	res.end();
+})
+
+app.get('/gestionclientes',(req, res)=>{
+	connection.query('SELECT * from pedidos where id = ?',[0],async(error,results)=> {
+		if (error){
+			console.log(error);
+		}
+		else{
+			console.log(results);
+			
+			all = results;
+			res.render('gestionclientes',{all:all, id:id });
+			res.end();
+		}
+	})
+})
+
+app.get('/gestionTiemposComida', (req, res)=>{
+	res.render('gestionTiemposComida',{
+		nombre: nombreU,
+		correo: correoU
+	});
+})
+
+
 //MIo
 app.get('/Compra',(req, res)=>{
 	let all = [];
@@ -239,45 +290,6 @@ app.post('/ComprarCarrito',async (req, res)=>{
 	   }
    });
 })
-app.get('/register',(req, res)=>{
-	cedulaA = cedulaC;
-	carneA = carneC;
-	nombreA = nombreC;
-	primerapellidoA = primerapellidoC;
-	segundoapellidoA = segundoapellidoC;
-	edadA = edadC;
-	fechaA = fechaC;
-	correoA = correoC;
-	res.render('register',{cedulaA,carneA,nombreA,primerapellidoA,segundoapellidoA,edadA,fechaA,correoA});
-})
-
-app.get('/index',(req, res)=>{
-    res.render('index');
-})
-
-app.get('/index2',(req, res)=>{
-    res.render('index2');
-})
-
-
-app.get('/gestionAlimentos',(req, res)=>{
-	id = idUser;
-	res.render('gestionAlimentos',{id});
-	res.end();
-})
-
-app.get('/gestionclientes',(req, res)=>{
-	id = idUser;
-	res.render('gestionclientes',{id});
-	res.end();
-})
-
-app.get('/gestionTiemposComida', (req, res)=>{
-	res.render('gestionTiemposComida',{
-		nombre: nombreU,
-		correo: correoU
-	});
-})
 
 
 app.post('/agregar_alimento', async (req, res)=>{
@@ -291,7 +303,7 @@ app.post('/agregar_alimento', async (req, res)=>{
         }else{          
 			res.render('gestionAlimentos', {
 				alert: true,
-				alertTitle: "Registro",
+				alertTitle: "Alimento Agredado",
 				alertMessage: "¡Registro de Alimento Exitoso!",
 				alertIcon:'success',
 				showConfirmButton: false,
@@ -459,6 +471,49 @@ app.post('/modificarCliente', async (req, res)=>{
 		});
 	}
 	
+});
+
+//metodo para eliminar clientes
+app.post('/historialCliente', async (req, res)=>{
+	let all = [];
+	const idcliente = req.body.id;
+	console.log(idcliente)
+	if (idcliente){
+		//se valida si los datos ingresados estan en la base de datos
+		connection.query('SELECT * FROM pedidos WHERE cedula = ?', [idcliente], async (error, results)=> {
+			if (results.length == 0 || results[0].cedula != idcliente){
+				res.render('gestionclientes', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "Cedula No Existente o Incorrecto",
+                    alertIcon:'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'gestionclientes'    
+                });
+			}else{
+				if(error){
+					console.log(error);
+				}else{
+				     
+					all = results;
+					res.render('gestionclientes',{all:all});
+					res.end();       
+						
+				}
+			}
+		});
+	}else {	
+		res.render('gestionclientes', {
+			alert: true,
+        	alertTitle: 'Advertencia',
+        	alertMessage: 'Por favor ingrese una Cedula',
+        	alertIcon: 'warning',
+        	showConfirmButton: true,
+        	timer: false,
+        	ruta: 'gestionclientes'
+		});
+	}
 });
 
 //metodo para eliminar clientes

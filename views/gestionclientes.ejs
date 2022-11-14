@@ -68,10 +68,33 @@
           <br><br>
           <h3>Historial Cliente</h3>
           <br><br>
-          <input type="text" name="id" id="id" placeholder="ID Cliente" size="50">
+          <input type="text" name="id" id="id" placeholder="Cedula Cliente" size="50">
           <br><br>
           <input type="submit" class="btn-register" id="historialcliente" value="Mostrar historial">
         </form>
+        <div class="TablaCompra">
+          <table class ="TablaCompra">
+            <thead>
+              <tr>
+              <th>Id</th>
+              <th>Fecha</th>
+              <th>Cedula</th>
+              <th>Alimento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% all.forEach((transfer)=> { %>
+                <tr>
+                  <td><%= transfer.id %></td>
+                  <td><%= transfer.fecha %></td>
+                  <td><%= transfer.cedula %></td>
+                  <td><%= transfer.alimentos %></td>
+                  
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
       </article>
 
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
