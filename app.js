@@ -21,9 +21,16 @@ edadC = "";
 fechaC = '';
 correoC = "";
 AlimentosU = "";
+AlimentosFactura ="";
+AlimentosTotal="";
+NumeroCompra =0;
+Date_ = "";
+total = 0;
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer')
+const {jsPDF} = require('jspdf');
+const QRCode = require('qrcode');
 
 //2 - Para poder capturar los datos del formulario (sin urlencoded nos devuelve "undefined")
 app.use(express.urlencoded({extended:false}));
@@ -131,7 +138,7 @@ app.get('/Compra',(req, res)=>{
 //MIo
 app.get('/Carrito',(req, res)=>{
 	let all = [];
-	var total = 0;
+	total = 0;
 	AlimentosU = "";
 	connection.query('SELECT * from carrito where Correo = ?',correoC,async(error,results)=> {
         if (error){
@@ -155,7 +162,7 @@ app.get('/Carrito',(req, res)=>{
 //MIo
 app.post('/EliminarCarrito',(req, res)=>{
 	let all = [];
-	var total = 0;
+	total = 0;
 	var id = req.body.ID;
 	AlimentosU = "";
 	connection.query('DELETE from carrito where id = ?',[id],async(error,results)=> {
@@ -253,11 +260,13 @@ app.post('/Compra',async (req, res)=>{
 //MIo
 app.post('/ComprarCarrito',async (req, res)=>{
 	const tiempoTranscurrido = Date.now();
-	var total = 0;
-	const hoy = new Date(tiempoTranscurrido);
-	hoy.toDateString(); 
-	const NombreCompra = nombreC + " " + primerapellidoC + " " + segundoapellidoC;
 	
+	const hoy = new Date(tiempoTranscurrido);
+	Date_=hoy.toDateString(); 
+	const NombreCompra = nombreC + " " + primerapellidoC + " " + segundoapellidoC;
+	AlimentosFactura = AlimentosU;
+	AlimentosTotal = total;
+	total = 0;
 	connection.query('INSERT INTO pedidos SET ?',{fecha:hoy.toDateString(),carne:carneC,cedula:cedulaC,nombreCompleto:NombreCompra,correo:correoC,alimentos:AlimentosU}, async (error, results)=>{
 	   if(error){
 		   console.log(error);
@@ -267,6 +276,13 @@ app.post('/ComprarCarrito',async (req, res)=>{
 				console.log(error);
 			}else{     
 				AlimentosU = "";
+				console.log(cedulaC)
+				connection.query('SELECT * FROM pedidos WHERE cedula = ?',[cedulaC] , async (results)=> {
+					for( const suma in results){
+						NumeroCompra = results[suma].id;
+						console.log(NumeroCompra);
+					}
+				});
 				connection.query('SELECT * from carrito where Correo = ?',[correoC],async(error,results)=> {
 					if (error){
 						console.log(error);
@@ -279,6 +295,7 @@ app.post('/ComprarCarrito',async (req, res)=>{
 							console.log(total);
 						}
 						all = results;
+						sendPDF();
 						res.render('Carrito',{all:all,Total:total});
 						res.end();
 					}
@@ -734,6 +751,36 @@ var transporter = nodemailer.createTransport({
 	  pass: 'hnqagnceljerjump'
 	}
   });
+  const sendPDF = async() =>{
+	let pdfOutput = await cretePDF();
+	transporter.sendMail({
+		from: 'tecfoodweb@gmail.com',
+		to: correoC,
+		subject: 'Factura de compra',
+		text : "Gracias por su compra",
+		attachments : [{path:pdfOutput}]
+
+	});
+  }
+
+  const pdf = new jsPDF({
+	orientation: "portrait",
+	unit: "cm",
+	format: "a4",
+
+  });
+  const cretePDF = async() =>{
+	let qrCode = await QRCode.toDataURL("Su numero de compra:"+NumeroCompra+"\n" + "Fecha:"+Date_ + "\n" + "Carné:" + carneC);
+	pdf.setTextColor(0,0,0);
+	pdf.setFontSize(20);
+	pdf.text("FACTURA DE COMPRA \n\nCompañia TECFood \n\nItems comprados: " + "\n" + AlimentosFactura +"\n"+ "El monto total pagado:" + AlimentosTotal + "\n\nGracias por su compra",1.5,3.5);
+	pdf.addImage(qrCode,"JPEG",14,1,5,5);
+	pdf.save("Test1.pdf");
+	const pdfOutput = pdf.output("datauristring");
+	return pdfOutput;
+
+
+  };
 
 app.listen(3000, (req, res)=>{
     console.log('SERVER RUNNING IN http://localhost:3000');
