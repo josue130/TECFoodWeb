@@ -20,7 +20,7 @@ segundoapellidoC = '';
 edadC = "";
 fechaC = '';
 correoC = "";
-
+AlimentosU = "";
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer')
@@ -60,7 +60,185 @@ app.use(session({
 app.get('/login',(req, res)=>{
     res.render('login');
 })
+//MIo
+app.get('/Compra',(req, res)=>{
+	let all = [];
+	connection.query('SELECT * from comida where Tipo ="PlatoPrincipal" and Tiempo = "Almuerzo" and Disponibilidad = "Si"',async(error,results)=> {
+        if (error){
+            console.log(error);
+        }
+        else{
+			console.log(results);
+            all = results;
+			res.render('CompraAlimentos',{all:all});
+			res.end();
+        }
+    })
+	
+    
+})
+//MIo
+app.get('/Carrito',(req, res)=>{
+	let all = [];
+	var total = 0;
+	AlimentosU = "";
+	connection.query('SELECT * from carrito where Correo = ?',correoC,async(error,results)=> {
+        if (error){
+            console.log(error);
+        }
+        else{
+			console.log(results);
+			for( const suma in results){
+				total += results[suma].Precio * results[suma].Cantidad
+				AlimentosU += results[suma].Nombre +","
+				console.log(total);
+			}
 
+            all = results;
+			res.render('Carrito',{all:all,Total:total});
+			res.end();
+        }
+    })
+	
+})
+//MIo
+app.post('/EliminarCarrito',(req, res)=>{
+	let all = [];
+	var total = 0;
+	var id = req.body.ID;
+	AlimentosU = "";
+	connection.query('DELETE from carrito where id = ?',[id],async(error,results)=> {
+        if (error){
+            console.log(error);
+        }
+        else{
+			connection.query('SELECT * from carrito where Correo = ?',[correoC],async(error,results)=> {
+				if (error){
+					console.log(error);
+				}
+				else{
+					console.log(results);
+					for( const suma in results){
+						total += results[suma].Precio * results[suma].Cantidad
+						AlimentosU += results[suma].Nombre +","
+						console.log(total);
+					}
+		
+					all = results;
+					res.render('Carrito',{all:all,Total:total});
+					res.end();
+				}
+			})	
+        }
+    })
+	
+})
+//MIo
+app.post('/Seleccion', async (req, res)=>{
+	var Seleccion1 = req.body.Seleccion1;
+	var Seleccion2 = req.body.Seleccion2;
+	if (Seleccion1 ==0){
+		Seleccion1 = "Desayuno";
+	}
+	if (Seleccion1 ==1){
+		Seleccion1 = "Almuerzo";
+	}
+	if (Seleccion1 ==2){
+		Seleccion1 = "Cena";
+	}
+	if (Seleccion2 ==0){
+		Seleccion2 = "Bebida";
+	}
+	if (Seleccion2 ==1){
+		Seleccion2 = "Postre";
+	}
+	if (Seleccion2 ==2){
+		Seleccion2 = "PlatoPrincipal";
+	}
+	
+	let all = [];
+	console.log(Seleccion1);
+
+	connection.query('SELECT * from comida where Tipo =? and Tiempo = ? and Disponibilidad = "Si"',[Seleccion2,Seleccion1],async(error,results)=> {
+        if (error){
+            console.log(error);
+        }
+        else{
+			console.log(results);
+            all = results;
+			res.render('CompraAlimentos',{all:all});
+			res.end();
+        }
+    })
+
+	
+	
+})
+//MIo
+app.post('/Compra',async (req, res)=>{
+	var ID = req.body.ID;
+	var Cantidad = req.body.Cantidad;
+	console.log(ID);
+	console.log(Cantidad);
+	connection.query('SELECT * from comida where ID=? and Disponibilidad = "Si"',[ID],async(error,results)=> {
+        if (error){
+            console.log(error);
+        }
+        else{
+			var Nombre = results[0].Nombre;
+			var Precio = results[0].Precio;
+			connection.query('INSERT INTO carrito SET ?',{Nombre:Nombre,Precio:Precio,Cantidad:Cantidad,Correo:correoC}, async (error, results)=>{
+			   if(error){
+				   console.log(error);
+			   }else{              
+				   res.redirect('/Compra');         
+			   }
+		   });
+
+        }
+    })
+})
+
+//MIo
+app.post('/ComprarCarrito',async (req, res)=>{
+	const tiempoTranscurrido = Date.now();
+	var total = 0;
+	const hoy = new Date(tiempoTranscurrido);
+	hoy.toDateString(); 
+	const NombreCompra = nombreC + " " + primerapellidoC + " " + segundoapellidoC;
+	
+	connection.query('INSERT INTO pedidos SET ?',{fecha:hoy.toDateString(),carne:carneC,cedula:cedulaC,nombreCompleto:NombreCompra,correo:correoC,alimentos:AlimentosU}, async (error, results)=>{
+	   if(error){
+		   console.log(error);
+	   }else{            
+		connection.query('DELETE FROM carrito WHERE correo = ?',[correoC], async (error, results)=>{
+			if(error){
+				console.log(error);
+			}else{     
+				AlimentosU = "";
+				connection.query('SELECT * from carrito where Correo = ?',[correoC],async(error,results)=> {
+					if (error){
+						console.log(error);
+					}
+					else{
+						console.log(results);
+						for( const suma in results){
+							total += results[suma].Precio * results[suma].Cantidad
+							AlimentosU += results[suma].Nombre +","
+							console.log(total);
+						}
+						all = results;
+						res.render('Carrito',{all:all,Total:total});
+						res.end();
+					}
+				})      
+
+			}
+		});
+		           
+	   }
+   });
+})
 app.get('/register',(req, res)=>{
 	cedulaA = cedulaC;
 	carneA = carneC;
@@ -428,6 +606,7 @@ app.post('/auth', async (req, res)=> {
 					correoC = results[0].correo.toString();
 					cedulaC = results[0].cedula;
 					carneC = results[0].carne;
+					
 					primerapellidoC = results[0].primerapellido;
 					segundoapellidoC = results[0].segundoapellido;
 					edadC = results[0].edad;

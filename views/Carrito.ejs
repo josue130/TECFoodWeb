@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="resources/css/style.css">
+    <title>TecFood Web</title>
+    <style>      
+    
+    </style>
+  </head>
+  <body class="grid-container">
+        
+    <header class="header"><h1><img src="ico.png" width="35" height="35"/> TECFOOD WEB</h1></header>    
+    <nav class="navbar">
+        <a href="Compra" class="estilogestion">Compra Productos</a>
+        <a href="Carrito" class="estilogestion">Carrito Compra</a>
+      <br>
+    </nav>
+  
+    <aside class="sidebar">
+            <h2>Datos usuario</h2>
+            <br>
+            <strong> Nombre:<br> Josue <br>
+                <br> Correo:<br> Juan <br>
+                <br>                      
+                <a href="logout" >Logout</a>
+                <br> 
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                
+    </aside>    
+    <article class="main">
+      
+      <div class="EliminarCarrito">
+        <form action="/EliminarCarrito" method="POST">
+      
+          <input type="text" name="ID" placeholder="Identificador" required>
+    
+          <input type="submit"  class="btn-eliminar-carrito" value="Eliminar del carrito">
+    
+          </form>
+      </div>
+      <div class="TablaCompra">
+        <table class = "TablaCompra">
+          <thead>
+            <tr>
+            <th>Id</th>
+            <th>Alimento</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% all.forEach((transfer)=> { %>
+              <tr>
+                <td><%= transfer.id %></td>
+                <td><%= transfer.Nombre %></td>
+                <td><%= transfer.Precio %></td>
+                <td><%= transfer.Cantidad %></td>
+                
+              </tr>
+            <% }) %>
+
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"> Total</td>
+              <td >  </td>
+              <td class="CantidadTotal"> <%= Total %> </td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class ="form-comprar">
+          <form action="/ComprarCarrito" method="POST">
+            <input type="submit"  value="Comprar">
+            </form>
+        </div>
+
+      </div>
+     
+        
+      </article>
+        
+        
+  </body>
+</html>
