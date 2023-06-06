@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //5 - Establecemos el motor de plantillas
 app.set('view engine','ejs');
 
-const connection = require('./database/db');
+// const connection = require('./database/db');
 
 //6 -Invocamos a bcrypt
 const bcrypt = require('bcryptjs');
