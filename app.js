@@ -782,7 +782,7 @@ var transporter = nodemailer.createTransport({
 
   };
 
-app.listen(3000, (req, res)=>{
+/*app.listen(3000, (req, res)=>{
     console.log('SERVER RUNNING IN http://localhost:3000');
-});
+});*/
 
